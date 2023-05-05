@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
+# In[17]:
 
 
 import spotipy
@@ -12,6 +12,7 @@ import requests
 import time
 import pickle
 from config import *
+from prettytable import PrettyTable
 
 # Set up Spotify API client
 
@@ -44,7 +45,7 @@ def get_song_features(title, artist):
         return None
 
 
-# In[10]:
+# In[14]:
 
 
 def run_recommender():
@@ -85,17 +86,18 @@ def run_recommender():
         hot_or_not = res["dataset"]
         c = res["cluster2"]
         
-        rec_song = songs_df[(songs_df["dataset"] == hot_or_not) &                  (songs_df["cluster2"] == c)].sample()[["title", "artists", "id"]]
+        rec_song = songs_df[(songs_df["dataset"] == hot_or_not) &                  (songs_df["cluster2"] == c)].sample()[["title", "artists", "open_url"]]
     else:
-        rec_song = songs_df[(songs_df["cluster2"] == cluster) &                  (songs_df["dataset"] == "not_hot_songs")].sample()[["title", "artists", "id"]]
+        rec_song = songs_df[(songs_df["cluster2"] == cluster) &                  (songs_df["dataset"] == "not_hot_songs")].sample()[["title", "artists", "open_url"]]
         
-    print(rec_song)
+    print("Title: {}\nArtist: {}\nLink: {}".format(rec_song['title'].values[0], rec_song['artists'].values[0], rec_song['open_url'].values[0]))
 
 
-# In[11]:
+# In[22]:
 
 
 def more_recommendations():
+    table = PrettyTable()
     while True:
         run_recommender()
     
@@ -106,7 +108,7 @@ def more_recommendations():
     print("Good bye!")
 
 
-# In[12]:
+# In[23]:
 
 
 more_recommendations()
